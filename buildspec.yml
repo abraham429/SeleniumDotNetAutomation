@@ -14,7 +14,7 @@ phases:
   post_build:
     commands:
       - echo Running tests...
-      - dotnet test --configuration Release
+      - dotnet test --configuration Release --logger "junit;LogFilePath=TestResults\TestResults.xml"
 artifacts:
   files:
     - out/**/*

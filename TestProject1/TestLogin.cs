@@ -23,9 +23,10 @@ namespace SeleniumTests
         [SetUp]
         public void Setup()
         {
-            /* --Local Driver Enable -- */
+            /* --Local Driver Enable 
             // Initialize WebDriver before each test
             driver = new ChromeDriver();
+	    -- */
 
 
             // Get current test name
@@ -34,21 +35,20 @@ namespace SeleniumTests
             Console.WriteLine("Running test: " + testName + " version " + buildNumber);
 
 
-            /* --Saucelabs Enable
-                        var browserOptions = new ChromeOptions();
-                        browserOptions.PlatformName = "Windows 11";
-                        browserOptions.BrowserVersion = "latest";
-                        var sauceOptions = new Dictionary<string, object>();
-                        sauceOptions.Add("username", "arunabraham1279");
-                        sauceOptions.Add("accessKey", "eaaec9f1-176c-49f2-bfe7-b17401e584c8");
-                        sauceOptions.Add("build", buildNumber);
-                        sauceOptions.Add("name", testName);
-                        browserOptions.AddAdditionalOption("sauce:options", sauceOptions);
+            /* --Saucelabs Enabled  */
+            var browserOptions = new ChromeOptions();
+            browserOptions.PlatformName = "Windows 11";
+            browserOptions.BrowserVersion = "latest";
+            var sauceOptions = new Dictionary<string, object>();
+            sauceOptions.Add("username", "arunabraham1279");
+            sauceOptions.Add("accessKey", "eaaec9f1-176c-49f2-bfe7-b17401e584c8");
+            sauceOptions.Add("build", buildNumber);
+            sauceOptions.Add("name", testName);
+            browserOptions.AddAdditionalOption("sauce:options", sauceOptions);
 
-                        var uri = new Uri("https://ondemand.us-west-1.saucelabs.com:443/wd/hub");
-                        driver = new RemoteWebDriver(uri, browserOptions);
+            var uri = new Uri("https://ondemand.us-west-1.saucelabs.com:443/wd/hub");
+            driver = new RemoteWebDriver(uri, browserOptions);
 
-            --Saucelabs Enable  */
             driver.Manage().Window.Maximize();
 
         }
