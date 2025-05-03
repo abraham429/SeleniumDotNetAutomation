@@ -1,0 +1,39 @@
+<testsuites>
+  <testsuite name="TestProject1.dll" tests="2" skipped="0" failures="0" errors="0" time="11.329" timestamp="2025-05-03T22:48:03" hostname="LAPTOP-1DL330PA" id="0" package="TestProject1.dll">
+    <properties />
+    <testcase classname="SeleniumTests.TestLogin" name="TestSuccessfulLogin" time="7.3970000">
+      <system-out><![CDATA[Running test: TestSuccessfulLogin version 0.1.0
+verification text: Enter verification code
+
+]]></system-out>
+    </testcase>
+    <testcase classname="SeleniumTests.TestLogin" name="TestUnsuccessfulLogin" time="3.9320000">
+      <system-out><![CDATA[Running test: TestUnsuccessfulLogin version 0.1.0
+Alert Text: Human verification failed. Please try again or contact your system administrator for assistance.
+
+]]></system-out>
+    </testcase>
+    <system-out>
+Test Framework Informational Messages:
+NUnit Adapter 5.0.0.0: Test execution started
+Running all tests in C:\Users\family\source\TestProject1\bin\Release\net48\TestProject1.dll
+   NUnit3TestExecutor discovered 2 of 2 NUnit test cases using Current Discovery mode, Non-Explicit run
+Starting ChromeDriver 135.0.7049.114 (63fd8a7d9d09e41ba37b84386c85d5f249f848f7-refs/branch-heads/7049@{#2175}) on port 63008
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully on port 63008.
+Running test: TestSuccessfulLogin version 0.1.0
+verification text: Enter verification code
+
+Starting ChromeDriver 135.0.7049.114 (63fd8a7d9d09e41ba37b84386c85d5f249f848f7-refs/branch-heads/7049@{#2175}) on port 63034
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully on port 63034.
+Running test: TestUnsuccessfulLogin version 0.1.0
+Alert Text: Human verification failed. Please try again or contact your system administrator for assistance.
+
+NUnit Adapter 5.0.0.0: Test execution complete
+</system-out>
+    <system-err></system-err>
+  </testsuite>
+</testsuites>
