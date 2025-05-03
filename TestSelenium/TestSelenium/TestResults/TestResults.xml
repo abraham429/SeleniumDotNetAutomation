@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<testsuites time="9.706" tests="2" failures="0">
+  <testsuite id="0" name="SeleniumTests.dll" tests="2" failures="0" time="9.706">
+    <testcase classname="SeleniumTests.TestLogin" name="TestSuccessfulLogin" time="5.9653409" />
+    <testcase classname="SeleniumTests.TestLogin" name="TestUnsuccessfulLogin" time="3.7402200" />
+  </testsuite>
+</testsuites>
