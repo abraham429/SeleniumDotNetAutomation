@@ -5,8 +5,6 @@ phases:
     runtime-versions:
       dotnet: 6.0  
     commands:
-      - echo Cleaning up old builds...
-      - rm -rf bin/ out/ TestResults/ obj/
       - echo Installing dependencies...
       - dotnet restore
   build:
@@ -18,8 +16,6 @@ phases:
     commands:
       - echo Running tests...
       - dotnet test SeleniumTests.sln --configuration Release --verbosity detailed --logger "junit;LogFilePath=TestResults/TestResults.xml"
-      - echo ? Packaging application...
-      - echo ? dotnet publish -c Release -o out
 artifacts:
   files:
     - out/**/*
