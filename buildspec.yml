@@ -2,20 +2,19 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      dotnet: 6.0  
     commands:
       - echo Installing dependencies...
+      - cd TestProject1
       - dotnet restore
   build:
     commands:
       - echo Building the application...
-      - dotnet clean SeleniumTests.sln
-      - dotnet build SeleniumTests.sln --configuration Release
+      - dotnet clean 
+      - dotnet build --configuration Release
   post_build:
     commands:
       - echo Running tests...
-      - dotnet test SeleniumTests.sln --configuration Release --verbosity detailed --logger "junit;LogFilePath=TestResults/TestResults.xml"
+      - dotnet test --configuration Release --logger "junit;LogFilePath=TestResults/TestResults.xml"
 artifacts:
   files:
     - out/**/*
