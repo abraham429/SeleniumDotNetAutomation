@@ -13,11 +13,4 @@ phases:
       - dotnet build --configuration Release
   post_build:
     commands:
-      - echo Running tests...
-      - echo disabling: dotnet test --configuration Release --logger "junit;LogFilePath=TestResults\TestResults.xml"
-artifacts:
-  files:
-    - out/**/*
-    - TestResults/TestResults.xml
-  discard-paths: no
-
+      - echo Running tests... disabled AWS testing due to concurrent use of saucelabs with GitHub Actions
