@@ -17,8 +17,7 @@ namespace SeleniumTests
         private const string ValidEmail1 = "arun.abraham@yahoo.com";
         private const string ValidPassword1 = "Ninja1Test";
         private const string InvalidEmail1 = "InvalidEmail@yahoo.com";
-        private const string InvalidPassword1 = "Ninja1Test";
-
+        private const string InvalidPassword1 = "' OR '1'='1'; --";
 
 
         [SetUp]
@@ -26,11 +25,11 @@ namespace SeleniumTests
         {
              // Get current test name
             string testName = TestContext.CurrentContext.Test.Name;
-            string buildNumber = "0.1.0";
+            string buildNumber = "1.0.0";
             Console.WriteLine("Running test: " + testName + " version " + buildNumber);
 
-            /* --Saucelabs Enabled  */
-            // Note: instead of SauceLabs, for local runs, we can use: driver = new ChromeDriver();
+            // Note: instead of using SauceLabs, for local runs, we can use: driver = new ChromeDriver();
+            /* --Using Saucelabs-- */
             var browserOptions = new ChromeOptions();
             browserOptions.PlatformName = "Windows 11";
             browserOptions.BrowserVersion = "latest";
@@ -40,12 +39,10 @@ namespace SeleniumTests
             sauceOptions.Add("build", buildNumber);
             sauceOptions.Add("name", testName);
             browserOptions.AddAdditionalOption("sauce:options", sauceOptions);
-
             var uri = new Uri("https://ondemand.us-west-1.saucelabs.com:443/wd/hub");
             driver = new RemoteWebDriver(uri, browserOptions);
 
             driver.Manage().Window.Maximize();
-
         }
 
         [Test]
@@ -66,19 +63,61 @@ namespace SeleniumTests
             emailTextBox.Click();
             emailTextBox.SendKeys(ValidEmail1);
 
-
             // Locate password text box and enter password
             IWebElement passwordTextBox = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("password")));
             passwordTextBox.Click();
             passwordTextBox.SendKeys(ValidPassword1);
 
+            // Wait briefly to let results load
+            System.Threading.Thread.Sleep(2000);
+
+            // Wait for the Submit Button
+            IWebElement submitButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("btn-primary")));
+            Assert.That(submitButton.Text, Is.EqualTo("Sign in"), "Button label does not match expected value.");
+            submitButton.Click();
+
+            // confirm that after login, the verification page appears
+            IWebElement verification = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("css-12gm3jm")));
+            Console.WriteLine("verification text: " + verification.Text);
+            Assert.That(verification.Text, Is.EqualTo("Enter verification code"));
+        }
+
+        [Test]
+        public void TestLoginViaTabbing()
+        {
+            // Navigate to URL
+            driver.Navigate().GoToUrl(LoginUrl);
+
+            // Set implicit wait (applies globally to all element searches)
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+
+            // Create WebDriverWait instance (max wait time: 10 seconds)
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+            // Wait until an element is visible and clickable
+            wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("email")));
+
+            // Send TAB key to move to username field
+            IWebElement bodyElement = driver.FindElement(By.TagName("body")); // Focus on page
+            bodyElement.SendKeys(Keys.Tab);
+            bodyElement.SendKeys(Keys.Tab);
+
+            // Locate the username field and enter credentials
+            IWebElement usernameField = driver.SwitchTo().ActiveElement(); // After tabbing, focus should be on username field
+            usernameField.SendKeys(ValidEmail1);
+
+            // Locate the password field and enter credentials
+            bodyElement.SendKeys(Keys.Tab);
+            IWebElement passwordField = driver.SwitchTo().ActiveElement(); // After tabbing, focus should be on password field
+            passwordField.SendKeys(ValidPassword1);
 
             // Wait briefly to let results load
             System.Threading.Thread.Sleep(2000);
 
-            IWebElement button = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("btn-primary")));
-            button.Click();
+            // Press Enter to submit
+            passwordField.SendKeys(Keys.Enter);
 
+            // confirm that after login, the verification page appears
             IWebElement verification = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("css-12gm3jm")));
             Console.WriteLine("verification text: " + verification.Text);
             Assert.That(verification.Text, Is.EqualTo("Enter verification code"));
