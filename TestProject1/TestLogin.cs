@@ -24,19 +24,13 @@ namespace SeleniumTests
         [SetUp]
         public void Setup()
         {
-            /* --Local Driver Enable 
-            // Initialize WebDriver before each test
-            driver = new ChromeDriver();
-	    -- */
-
-
-            // Get current test name
+             // Get current test name
             string testName = TestContext.CurrentContext.Test.Name;
             string buildNumber = "0.1.0";
             Console.WriteLine("Running test: " + testName + " version " + buildNumber);
 
-
             /* --Saucelabs Enabled  */
+            // Note: instead of SauceLabs, for local runs, we can use: driver = new ChromeDriver();
             var browserOptions = new ChromeOptions();
             browserOptions.PlatformName = "Windows 11";
             browserOptions.BrowserVersion = "latest";
@@ -90,7 +84,6 @@ namespace SeleniumTests
             Assert.That(verification.Text, Is.EqualTo("Enter verification code"));
         }
 
-
         [Test]
         public void TestUnsuccessfulLogin()
         {
@@ -122,6 +115,50 @@ namespace SeleniumTests
             Assert.That(alertTextBox.Text.Contains("contact your system administrator for assistance."));
         }
 
+        [Test]
+        public void TestDoNotHaveAnAccountLink()
+        {
+            // Navigate to URL
+            driver.Navigate().GoToUrl(LoginUrl);
+
+            // Set implicit wait (applies globally to all element searches)
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+
+            // Create WebDriverWait instance (max wait time: 10 seconds)
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+            // Locate & click on "Do not have an account?" link
+            IWebElement dontHaveAccountLink = wait.Until(ExpectedConditions.ElementToBeClickable(By.LinkText("Do not have an account?")));
+            dontHaveAccountLink.Click();
+
+            // Assert that the rester button is presented
+            IWebElement buttonToRegister = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("button.btn.btn-primary.m-t-sm")));
+            Assert.That(buttonToRegister.Text, Is.EqualTo("Register"), "Button label does not match expected value.");
+        }
+
+        [Test]
+        public void TestForgotPasswordLink()
+        {
+            // Navigate to URL
+            driver.Navigate().GoToUrl(LoginUrl);
+
+            // Set implicit wait (applies globally to all element searches)
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+
+            // Create WebDriverWait instance (max wait time: 10 seconds)
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+            // Locate & click on "Forgot your password?" link
+            IWebElement forgotPwdLink = wait.Until(ExpectedConditions.ElementToBeClickable(By.LinkText("Forgot your password?")));
+            forgotPwdLink.Click();
+
+            // Assert that the rester button is presented
+            IWebElement buttonToSend = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("button.btn.btn-primary.m-t-sm")));
+            Assert.That(buttonToSend.Text, Is.EqualTo("Send"), "Button label does not match expected value.");
+
+            // Wait briefly to let results load
+            System.Threading.Thread.Sleep(10000);
+        }
 
         [TearDown]
         public void Cleanup()
