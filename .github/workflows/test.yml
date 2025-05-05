@@ -17,13 +17,14 @@ jobs:
         run: dotnet restore
         working-directory: TestProject1
 
-
       - name: Build
         run: dotnet build --configuration Release
+        working-directory: TestProject1
 
       - name: Run tests
         run: dotnet test --configuration Release --logger "junit;LogFilePath=TestResults\TestResults.xml"
-
+        working-directory: TestProject1
+        
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
