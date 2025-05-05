@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: goto sln dir
         run: cd TestProject1
@@ -23,7 +23,7 @@ jobs:
         run: dotnet test --configuration Release --logger "junit;LogFilePath=TestResults\TestResults.xml"
 
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: TestResults
           path: TestResults
