@@ -10,6 +10,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: goto sln dir
+        run: cd ./TestProject1
+
       - name: Install dependencies
         run: dotnet restore
         working-directory: TestProject1
@@ -22,11 +25,6 @@ jobs:
         run: dotnet test --configuration Release --logger "junit;LogFilePath=TestResults\TestResults.xml"
         working-directory: TestProject1
 
-      - name: Publish Test Results
-        uses: actions/upload-test-results@v1
-        with:
-           path: TestResults
-    
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
