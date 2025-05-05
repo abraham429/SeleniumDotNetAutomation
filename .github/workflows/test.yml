@@ -1,0 +1,29 @@
+name: Automated Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: goto sln dir
+        run: cd TestProject1
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: Run tests
+        run: dotnet test --configuration Release --logger "junit;LogFilePath=TestResults\TestResults.xml"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: TestResults
+          path: TestResults
