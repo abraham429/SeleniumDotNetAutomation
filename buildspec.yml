@@ -3,8 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Installing dependencies... for AWS CodeBuild: https://us-east-1.codebuild.aws.amazon.com/project/eyJlbmNyeXB0ZWREYXRhIjoiV2o5N1E3eXdtaU0wZGt4dHJDbWZtTEFYbFl1b0NaRHlPdDI3TEdadWkvYlgxaDV5MXh4K1hvRFVxWnYxWEhUenZCczJHRGN1N1o5M1IxYmVuaTVqalRTVEVDQXdkcE1uaktVZkw5UW5LUWhaa1pjajhIVllLWTdvIiwiaXZQYXJhbWV0ZXJTcGVjIjoiTDNzSzVGNGZ0L0JCVGRQWiIsIm1hdGVyaWFsU2V0U2VyaWFsIjoxfQ%3D%3D
-
+      - echo Installing dependencies... for AWS CodeBuild
       - cd TestProject1
       - dotnet restore
   build:
