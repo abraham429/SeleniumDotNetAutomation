@@ -28,8 +28,10 @@ namespace SeleniumTests
             string buildNumber = "1.0.0";
             Console.WriteLine("Running test: " + testName + " version " + buildNumber);
 
-            // Note: instead of using SauceLabs, for local runs, we can use: driver = new ChromeDriver();
-            /* --Using Saucelabs-- */
+            // Note: instead of using SauceLabs, for local runs, we can use:
+            //       driver = new ChromeDriver();
+
+            /* --Using Saucelabs -- */
             var browserOptions = new ChromeOptions();
             browserOptions.PlatformName = "Windows 11";
             browserOptions.BrowserVersion = "latest";
@@ -57,7 +59,6 @@ namespace SeleniumTests
             // Create WebDriverWait instance (max wait time: 10 seconds)
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
-            // Wait until an element is visible and clickable
             // Locate email text box and enter email id
             IWebElement emailTextBox = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("email")));
             emailTextBox.Click();
@@ -123,6 +124,70 @@ namespace SeleniumTests
             Assert.That(verification.Text, Is.EqualTo("Enter verification code"));
         }
 
+
+        [Test]
+        public void TestLoginPageUiComponents()
+        {
+            // Navigate to URL
+            driver.Navigate().GoToUrl(LoginUrl);
+
+            // Set implicit wait (applies globally to all element searches)
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+
+            // Create WebDriverWait instance (max wait time: 10 seconds)
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+            // Locate Email label & confirm the text
+            IWebElement emailLabel = driver.FindElement(By.XPath("//label[@for='email']"));
+            Assert.That(emailLabel.Text, Is.EqualTo("Email"));
+
+            // Locate password label & confirm the text
+            IWebElement passwordLabel = driver.FindElement(By.XPath("//label[@for='password']"));
+            Assert.That(passwordLabel.Text, Is.EqualTo("Password"));
+
+            // Locate staySignedIn label & confirm the text
+            IWebElement staySignedInLabel = driver.FindElement(By.ClassName("css-ifz9uv"));
+            Assert.That(staySignedInLabel.Text, Is.EqualTo("Keep me signed in"));
+
+            // Locate checkbox for staySignedIn & confirm that it can be toggled
+            IWebElement staySignedInCheckbox = driver.FindElement(By.Id("staySignedIn"));
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            bool isChecked = (bool)js.ExecuteScript("return arguments[0].checked;", staySignedInCheckbox);
+            Assert.That(isChecked, Is.False);
+            js.ExecuteScript("arguments[0].scrollIntoView(true);", staySignedInCheckbox);
+            js.ExecuteScript("arguments[0].click();", staySignedInCheckbox);
+            isChecked = (bool)js.ExecuteScript("return arguments[0].checked;", staySignedInCheckbox);
+            Assert.That(isChecked, Is.True);
+
+            // Wait briefly to let results load
+            System.Threading.Thread.Sleep(10000);
+        }
+
+
+        [Test]
+        public void TestLoginWithNoEntriesWithErrorPopupAlert()
+        {
+            // Navigate to URL
+            driver.Navigate().GoToUrl(LoginUrl);
+
+            // Set implicit wait (applies globally to all element searches)
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
+            // Create WebDriverWait instance (max wait time: 10 seconds)
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+            IWebElement submitButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("btn-primary")));
+            Assert.That(submitButton.Text, Is.EqualTo("Sign in"), "Button label does not match expected value.");
+            submitButton.Click();
+
+            // Wait briefly to let results load
+            System.Threading.Thread.Sleep(500);
+
+            IWebElement alertPopup = driver.FindElement(By.ClassName("css-ab4h3z"));
+            Console.WriteLine("Alert Text: " + alertPopup.Text);
+            Assert.That(alertPopup.Text.Contains("Error during login"));
+        }
+
         [Test]
         public void TestUnsuccessfulLogin()
         {
@@ -154,7 +219,7 @@ namespace SeleniumTests
             Console.WriteLine("Alert Text: " + alertTextBox.Text);
             Assert.That(alertTextBox.Text.Contains("contact your system administrator for assistance."));
         }
-
+        
         [Test]
         public void TestDoNotHaveAnAccountLink()
         {
