@@ -16,7 +16,7 @@ namespace SeleniumTests
         private const string LoginUrl = "https://app.ninjarmm.com/auth/#/login";
         private const string ValidEmail1 = "arun.abraham@yahoo.com";
         private const string ValidPassword1 = "Ninja1Test";
-        private const string InvalidEmail1 = "InvalidEmail@yahoo.com";
+        private const string InvalidEmail1 = "' UNION SELECT null, null, null --";
         private const string InvalidPassword1 = "' OR '1'='1'; --";
 
 
@@ -146,8 +146,9 @@ namespace SeleniumTests
             passwordTextBox.Click();
             passwordTextBox.SendKeys(InvalidPassword1);
 
-            IWebElement button = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("btn-primary")));
-            button.Click();
+            IWebElement submitButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("btn-primary")));
+            Assert.That(submitButton.Text, Is.EqualTo("Sign in"), "Button label does not match expected value.");
+            submitButton.Click();
 
             IWebElement alertTextBox = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("alert-danger")));
             Console.WriteLine("Alert Text: " + alertTextBox.Text);
@@ -170,7 +171,7 @@ namespace SeleniumTests
             IWebElement dontHaveAccountLink = wait.Until(ExpectedConditions.ElementToBeClickable(By.LinkText("Do not have an account?")));
             dontHaveAccountLink.Click();
 
-            // Assert that the rester button is presented
+            // Assert that the register button is presented
             IWebElement buttonToRegister = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("button.btn.btn-primary.m-t-sm")));
             Assert.That(buttonToRegister.Text, Is.EqualTo("Register"), "Button label does not match expected value.");
         }
@@ -191,7 +192,7 @@ namespace SeleniumTests
             IWebElement forgotPwdLink = wait.Until(ExpectedConditions.ElementToBeClickable(By.LinkText("Forgot your password?")));
             forgotPwdLink.Click();
 
-            // Assert that the rester button is presented
+            // Assert that the register button is presented
             IWebElement buttonToSend = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("button.btn.btn-primary.m-t-sm")));
             Assert.That(buttonToSend.Text, Is.EqualTo("Send"), "Button label does not match expected value.");
 
