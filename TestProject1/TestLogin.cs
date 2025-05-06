@@ -13,6 +13,7 @@ namespace SeleniumTests
     public class TestLogin
     {
         private IWebDriver driver;
+        private WebDriverWait wait;
         private const string LoginUrl = "https://app.ninjarmm.com/auth/#/login";
         private const string ValidEmail1 = "arun.abraham@yahoo.com";
         private const string ValidPassword1 = "Ninja1Test";
@@ -43,39 +44,24 @@ namespace SeleniumTests
             browserOptions.AddAdditionalOption("sauce:options", sauceOptions);
             var uri = new Uri("https://ondemand.us-west-1.saucelabs.com:443/wd/hub");
             driver = new RemoteWebDriver(uri, browserOptions);
+            
+
+            // Set implicit wait (applies globally to all element searches)
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
 
             driver.Manage().Window.Maximize();
+
+            // Create WebDriverWait instance (max wait time: 10 seconds)
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+            // Navigate to URL
+            driver.Navigate().GoToUrl(LoginUrl);
         }
 
         [Test]
         public void TestSuccessfulLogin()
         {
-            // Navigate to URL
-            driver.Navigate().GoToUrl(LoginUrl);
-
-            // Set implicit wait (applies globally to all element searches)
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
-
-            // Create WebDriverWait instance (max wait time: 10 seconds)
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-
-            // Locate email text box and enter email id
-            IWebElement emailTextBox = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("email")));
-            emailTextBox.Click();
-            emailTextBox.SendKeys(ValidEmail1);
-
-            // Locate password text box and enter password
-            IWebElement passwordTextBox = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("password")));
-            passwordTextBox.Click();
-            passwordTextBox.SendKeys(ValidPassword1);
-
-            // Wait briefly to let results load
-            System.Threading.Thread.Sleep(2000);
-
-            // Wait for the Submit Button
-            IWebElement submitButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("btn-primary")));
-            Assert.That(submitButton.Text, Is.EqualTo("Sign in"), "Button label does not match expected value.");
-            submitButton.Click();
+            EnterCredentialsAndClickSignInButton(ValidEmail1, ValidPassword1);
 
             // confirm that after login, the verification page appears
             IWebElement verification = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("css-12gm3jm")));
@@ -86,16 +72,7 @@ namespace SeleniumTests
         [Test]
         public void TestLoginViaTabbing()
         {
-            // Navigate to URL
-            driver.Navigate().GoToUrl(LoginUrl);
-
-            // Set implicit wait (applies globally to all element searches)
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
-
-            // Create WebDriverWait instance (max wait time: 10 seconds)
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-
-            // Wait until an element is visible and clickable
+           // Wait until an element is visible and clickable
             wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("email")));
 
             // Send TAB key to move to username field
@@ -113,7 +90,7 @@ namespace SeleniumTests
             passwordField.SendKeys(ValidPassword1);
 
             // Wait briefly to let results load
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(500);
 
             // Press Enter to submit
             passwordField.SendKeys(Keys.Enter);
@@ -124,19 +101,9 @@ namespace SeleniumTests
             Assert.That(verification.Text, Is.EqualTo("Enter verification code"));
         }
 
-
         [Test]
         public void TestLoginPageUiComponents()
         {
-            // Navigate to URL
-            driver.Navigate().GoToUrl(LoginUrl);
-
-            // Set implicit wait (applies globally to all element searches)
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
-
-            // Create WebDriverWait instance (max wait time: 10 seconds)
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-
             // Locate Email label & confirm the text
             IWebElement emailLabel = driver.FindElement(By.XPath("//label[@for='email']"));
             Assert.That(emailLabel.Text, Is.EqualTo("Email"));
@@ -158,24 +125,11 @@ namespace SeleniumTests
             js.ExecuteScript("arguments[0].click();", staySignedInCheckbox);
             isChecked = (bool)js.ExecuteScript("return arguments[0].checked;", staySignedInCheckbox);
             Assert.That(isChecked, Is.True);
-
-            // Wait briefly to let results load
-            System.Threading.Thread.Sleep(10000);
         }
-
 
         [Test]
         public void TestLoginWithNoEntriesWithErrorPopupAlert()
         {
-            // Navigate to URL
-            driver.Navigate().GoToUrl(LoginUrl);
-
-            // Set implicit wait (applies globally to all element searches)
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-
-            // Create WebDriverWait instance (max wait time: 10 seconds)
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-
             IWebElement submitButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("btn-primary")));
             Assert.That(submitButton.Text, Is.EqualTo("Sign in"), "Button label does not match expected value.");
             submitButton.Click();
@@ -191,29 +145,7 @@ namespace SeleniumTests
         [Test]
         public void TestUnsuccessfulLogin()
         {
-            // Navigate to URL
-            driver.Navigate().GoToUrl(LoginUrl);
-
-            // Set implicit wait (applies globally to all element searches)
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-
-            // Create WebDriverWait instance (max wait time: 10 seconds)
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-
-            // Wait until an element is visible and clickable
-            // Locate email text box and enter email id
-            IWebElement emailTextBox = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("email")));
-            emailTextBox.Click();
-            emailTextBox.SendKeys(InvalidEmail1);
-
-            // Locate password text box and enter password
-            IWebElement passwordTextBox = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("password")));
-            passwordTextBox.Click();
-            passwordTextBox.SendKeys(InvalidPassword1);
-
-            IWebElement submitButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("btn-primary")));
-            Assert.That(submitButton.Text, Is.EqualTo("Sign in"), "Button label does not match expected value.");
-            submitButton.Click();
+            EnterCredentialsAndClickSignInButton(InvalidEmail1, InvalidPassword1);
 
             IWebElement alertTextBox = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("alert-danger")));
             Console.WriteLine("Alert Text: " + alertTextBox.Text);
@@ -223,15 +155,6 @@ namespace SeleniumTests
         [Test]
         public void TestDoNotHaveAnAccountLink()
         {
-            // Navigate to URL
-            driver.Navigate().GoToUrl(LoginUrl);
-
-            // Set implicit wait (applies globally to all element searches)
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
-
-            // Create WebDriverWait instance (max wait time: 10 seconds)
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-
             // Locate & click on "Do not have an account?" link
             IWebElement dontHaveAccountLink = wait.Until(ExpectedConditions.ElementToBeClickable(By.LinkText("Do not have an account?")));
             dontHaveAccountLink.Click();
@@ -244,15 +167,6 @@ namespace SeleniumTests
         [Test]
         public void TestForgotPasswordLink()
         {
-            // Navigate to URL
-            driver.Navigate().GoToUrl(LoginUrl);
-
-            // Set implicit wait (applies globally to all element searches)
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
-
-            // Create WebDriverWait instance (max wait time: 10 seconds)
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-
             // Locate & click on "Forgot your password?" link
             IWebElement forgotPwdLink = wait.Until(ExpectedConditions.ElementToBeClickable(By.LinkText("Forgot your password?")));
             forgotPwdLink.Click();
@@ -260,9 +174,6 @@ namespace SeleniumTests
             // Assert that the register button is presented
             IWebElement buttonToSend = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("button.btn.btn-primary.m-t-sm")));
             Assert.That(buttonToSend.Text, Is.EqualTo("Send"), "Button label does not match expected value.");
-
-            // Wait briefly to let results load
-            System.Threading.Thread.Sleep(10000);
         }
 
         [TearDown]
@@ -271,5 +182,24 @@ namespace SeleniumTests
             // Close browser after each test
             driver.Quit();
         }
+
+        private void EnterCredentialsAndClickSignInButton(string theEmail, string thePassword)
+        {
+            // Wait until an element is visible and clickable
+            // Locate email text box and enter email id
+            IWebElement emailTextBox = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("email")));
+            emailTextBox.Click();
+            emailTextBox.SendKeys(theEmail);
+
+            // Locate password text box and enter password
+            IWebElement passwordTextBox = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("password")));
+            passwordTextBox.Click();
+            passwordTextBox.SendKeys(thePassword);
+
+            IWebElement submitButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("btn-primary")));
+            Assert.That(submitButton.Text, Is.EqualTo("Sign in"), "Button label does not match expected value.");
+            submitButton.Click();
+        }
+
     }
 }
