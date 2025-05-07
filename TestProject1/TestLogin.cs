@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using SeleniumTests.Pages;
 
@@ -34,9 +36,9 @@ namespace SeleniumTests
             Console.WriteLine("Running test: " + testName + " version " + buildNumber);
 
             // Note: instead of using SauceLabs, for local runs, we can use:
-            driver = new ChromeDriver();
+            // driver = new ChromeDriver();
 
-            /* --Using Saucelabs
+            /* --Using Saucelabs -- */
             var browserOptions = new ChromeOptions();
             browserOptions.PlatformName = "Windows 11";
             browserOptions.BrowserVersion = "latest";
@@ -48,7 +50,7 @@ namespace SeleniumTests
             browserOptions.AddAdditionalOption("sauce:options", sauceOptions);
             var uri = new Uri("https://ondemand.us-west-1.saucelabs.com:443/wd/hub");
             driver = new RemoteWebDriver(uri, browserOptions);
-             -- */
+             
 
             // Set implicit wait (applies globally to all element searches)
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
