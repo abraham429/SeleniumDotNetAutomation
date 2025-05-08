@@ -24,8 +24,10 @@ namespace SeleniumTests
         private const string LoginUrl = "https://app.ninjarmm.com/auth/#/login";
         private const string ValidEmail1 = "arun.abraham@yahoo.com";
         private const string ValidPassword1 = "Ninja1Test";
-        private const string InvalidEmail1 = "' UNION SELECT null, null, null --";
-        private const string InvalidPassword1 = "' OR '1'='1'; --";
+        private const string InvalidEmail1 = "invalidEmail@yahoo.com ";
+        private const string InvalidPassword1 = "Ninja1Test ";
+        private const string sqlInjectionEmail1 = "' UNION SELECT null, null, null --";
+        private const string sqlInjectionPassword1 = "' OR '1'='1'; --";
 
         [SetUp]
         public void Setup()
@@ -38,7 +40,7 @@ namespace SeleniumTests
             // Note: instead of using SauceLabs, for local runs, we can use:
             // driver = new ChromeDriver();
 
-            /* --Using Saucelabs -- */
+            /* --Using Saucelabs               -- */
             var browserOptions = new ChromeOptions();
             browserOptions.PlatformName = "Windows 11";
             browserOptions.BrowserVersion = "latest";
@@ -50,7 +52,6 @@ namespace SeleniumTests
             browserOptions.AddAdditionalOption("sauce:options", sauceOptions);
             var uri = new Uri("https://ondemand.us-west-1.saucelabs.com:443/wd/hub");
             driver = new RemoteWebDriver(uri, browserOptions);
-             
 
             // Set implicit wait (applies globally to all element searches)
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
@@ -102,7 +103,22 @@ namespace SeleniumTests
             loginPage.EnterCredentialsAndClickSignInButton(InvalidEmail1, InvalidPassword1);
             loginPage.VerifyLoginErrorWithinModal();
         }
-        
+
+        [Test]
+        public void TestSqlInjection()
+        {
+            loginPage.EnterCredentialsAndClickSignInButton(sqlInjectionEmail1, sqlInjectionPassword1);
+            loginPage.VerifyLoginErrorWithinModal();
+        }
+
+        [Test]
+        public void TestSuccessfulLoginAfterFailure()
+        {
+            TestUnsuccessfulLogin();
+            loginPage.Clear();
+            TestSuccessfulLogin();
+        }
+
         [Test]
         public void TestDoNotHaveAnAccountLink()
         {
