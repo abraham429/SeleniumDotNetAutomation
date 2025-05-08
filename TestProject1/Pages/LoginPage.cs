@@ -18,7 +18,7 @@ namespace SeleniumTests.Pages
         private IWebElement AlertTextBox() => wait.Until(ExpectedConditions.ElementExists(By.ClassName("alert-danger")));
         private IWebElement EmailTextBox() => wait.Until(ExpectedConditions.ElementExists(By.Id("email")));
         private IWebElement PasswordTextBox() => wait.Until(ExpectedConditions.ElementExists(By.Id("password")));
-        private IWebElement SignInButton() => wait.Until(ExpectedConditions.ElementExists(By.ClassName("btn-primary")));
+        private IWebElement SignInButton() => wait.Until(ExpectedConditions.ElementExists(By.CssSelector("button[type='submit']")));
         private IWebElement EmailLabel() => wait.Until(ExpectedConditions.ElementExists(By.CssSelector("label[for='email']")));
         private IWebElement PasswordLabel() => wait.Until(ExpectedConditions.ElementExists(By.CssSelector("label[for='password']")));
         private IWebElement StaySignedInCheckbox() => wait.Until(ExpectedConditions.ElementExists(By.Id("staySignedIn")));
