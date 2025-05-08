@@ -82,8 +82,8 @@ namespace SeleniumTests.Pages
         {
             // Wait until an element is visible and clickable
             wait.Until(ExpectedConditions.ElementToBeClickable(AlertPopup()));
-            Console.WriteLine("Alert Text: " + AlertPopup().Text);
             Assert.That(AlertPopup().Text.Contains("Error during login"));
+            AlertPopup().Click();
         }
 
         public void VerifyLoginErrorWithinModal()
